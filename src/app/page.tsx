@@ -1,38 +1,49 @@
-"use client"
+"use client";
 
 import { literata, montserrat } from "@/lib/fonts";
 import { useState } from "react";
 
 /* eslint-disable @next/next/no-img-element */
 export default function Home() {
-  const [dato, setDato] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzwtzpdC31130s_Db7Egyq1XXS8g2I1hPzlMqZNugyy8X0ig2tJstfs7Vc_7G_4rqsi/exec"; // Pega aquí la URL de Google Apps Script
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("Name") as string;
+
+    if (!name.trim()) {
+      setMessage("Por favor, ingresa tu nombre.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbzwtzpdC31130s_Db7Egyq1XXS8g2I1hPzlMqZNugyy8X0ig2tJstfs7Vc_7G_4rqsi/exec";
 
     try {
       const response = await fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify({ dato }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: formData,
       });
 
       if (response.ok) {
-        alert("Dato enviado correctamente");
-        setDato("");
+        setMessage("¡Asistencia confirmada! 🎉");
+        e.currentTarget.reset();
       } else {
-        alert("Error al enviar el dato");
+        setMessage("Hubo un error al enviar los datos. Inténtalo de nuevo.");
       }
-    } catch (error: unknown) {
-      console.log(error);
-      alert("Error en la conexión");
+    } catch (error) {
+      console.error(error);
+      setMessage("Error en la conexión. Revisa tu internet.");
+    } finally {
+      setLoading(false);
     }
   };
-
 
   return (
     <div
@@ -135,19 +146,26 @@ export default function Home() {
               Nos encantaría contar con tu presencia en este momento tan
               memorable. Ingresa tu nombre y confirma tu asistencia.
             </p>
-            <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={dato}
-              onChange={(e) => setDato(e.target.value)}
-              className="bg-white w-full max-w-80 px-2 py-1 text-sm"
-              placeholder="Ingresa tu nombre"
-            />
-            <button type="submit" className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all">
-              Confirmar
-            </button>
-
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col items-center mt-6"
+            >
+              <input
+                type="text"
+                name="Name"
+                className="bg-white w-full max-w-80 px-2 py-1 text-sm border border-gray-300 rounded-md"
+                placeholder="Ingresa tu nombre"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 hover:scale-105 transition-all disabled:opacity-50"
+                disabled={loading}
+              >
+                {loading ? "Enviando..." : "Confirmar"}
+              </button>
             </form>
+            {message && <p className="text-sm mt-2">{message}</p>}
           </div>
         </div>
       </div>
