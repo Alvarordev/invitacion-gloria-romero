@@ -1,7 +1,7 @@
 'use client'
 
 /* eslint-disable @next/next/no-img-element */
-import { literata, monteCarlo, montserrat } from "@/lib/fonts";
+import { monteCarlo, montserrat } from "@/lib/fonts";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -118,8 +118,8 @@ export default function Home() {
             <p className={`font-light ${montserrat.className}`}>
               Únete a nosotros para celebrar un cumpleaños en honor a{" "}
             </p>
-            <p className="text-6xl">Gloria Romero</p>
-            <p className={`${literata.className} text-2xl pt-2 font-semibold`}>{`"Paquita"`}</p>
+            <p className="text-4xl">Gloria Romero</p>
+            <p className={`${monteCarlo.className} text-6xl pt-2 font-bold text-[#4a2715]`}>{`"Paquita"`}</p>
             <p className="text-9xl font-medium">80</p>
             <div className="flex gap-3 items-center pt-4">
               <span className=" h-[1px] w-9 bg-[#502916]"></span>
@@ -127,7 +127,7 @@ export default function Home() {
               <span className=" h-[1px] w-9 bg-[#502916]"></span>
             </div>
             <p className={`font-light ${montserrat.className}`}>
-              Inicio 18:00 pm
+              Inicio 06:00 pm
             </p>
           </div>
 
@@ -136,7 +136,7 @@ export default function Home() {
             <p>Centro Cultural Manuelita Saenz, Plaza Bolivar</p>
             <span className="my-2 h-[1px] w-12 bg-[#502916]"></span>
             <p>Jr. Carlos de los Heros 277, Pueblo Libre</p>
-            <p>Hora: 06:00 PM - 12:00 AM</p>
+            <p>Hora: 06:00 PM - 01:00 AM</p>
             <a
               href="https://maps.app.goo.gl/WoH5McuZEfVd765j6"
               target="_blank"
