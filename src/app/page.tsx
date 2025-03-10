@@ -10,7 +10,7 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxDYBp_w9mnGgSR2ec5kNKBMC765lxIt_FSjrgZLoDSirbCaNAkIPCEC4l2FWhgZPao/exec"; // Pega aquí la URL de Google Apps Script
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzwtzpdC31130s_Db7Egyq1XXS8g2I1hPzlMqZNugyy8X0ig2tJstfs7Vc_7G_4rqsi/exec"; // Pega aquí la URL de Google Apps Script
 
     try {
       const response = await fetch(scriptURL, {
