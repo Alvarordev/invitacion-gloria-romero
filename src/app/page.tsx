@@ -1,7 +1,7 @@
 'use client'
 
 /* eslint-disable @next/next/no-img-element */
-import { literata, montserrat } from "@/lib/fonts";
+import { literata, monteCarlo, montserrat } from "@/lib/fonts";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -113,13 +113,13 @@ export default function Home() {
           className={`flex flex-col justify-center items-center pt-16 text-center`}
         >
           <div
-            className={`flex flex-col justify-center items-center text-center ${literata.className} font-light gap-1`}
+            className={`flex flex-col justify-center items-center text-center ${monteCarlo.className} font-light gap-1`}
           >
             <p className={`font-light ${montserrat.className}`}>
               Únete a nosotros para celebrar un cumpleaños en honor a{" "}
             </p>
-            <p className="text-4xl">GLORIA ROMERO</p>
-            <p className="text-lg">{`"Paquita"`}</p>
+            <p className="text-6xl">Gloria Romero</p>
+            <p className={`${literata.className} text-2xl pt-2 font-semibold`}>{`"Paquita"`}</p>
             <p className="text-9xl font-medium">80</p>
             <div className="flex gap-3 items-center pt-4">
               <span className=" h-[1px] w-9 bg-[#502916]"></span>
@@ -133,7 +133,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center text-center py-12 gap-1 font-light">
             <p className="font-bold text-lg pb-2">LUGAR</p>
-            <p>Centro Cultural Manuelita Saenz</p>
+            <p>Centro Cultural Manuelita Saenz, Plaza Bolivar</p>
             <span className="my-2 h-[1px] w-12 bg-[#502916]"></span>
             <p>Jr. Carlos de los Heros 277, Pueblo Libre</p>
             <p>Hora: 06:00 PM - 12:00 AM</p>
