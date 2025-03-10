@@ -7,12 +7,10 @@ import { useState } from "react";
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [name, setName] = useState(""); // Agregamos estado para el nombre
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("Name") as string;
 
     if (!name.trim()) {
       setMessage("Por favor, ingresa tu nombre.");
@@ -23,17 +21,23 @@ export default function Home() {
     setMessage("");
 
     const scriptURL =
-      "https://script.google.com/macros/s/AKfycbzwtzpdC31130s_Db7Egyq1XXS8g2I1hPzlMqZNugyy8X0ig2tJstfs7Vc_7G_4rqsi/exec";
+      "https://script.google.com/macros/s/AKfycbz_Rt3odJKPb2mEe0pFhNuTQaSjCSRRy8xj80_syoKeApUwTdxuPCCECdK-YWVQiI24/exec";
 
     try {
+      const formData = new FormData();
+      formData.append("Name", name); // Ahora agregamos el valor manualmente
+
+      console.log("FormData enviado:", formData.get("Name")); // Verifica si tiene valor
+
       const response = await fetch(scriptURL, {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
+        console.log(response)
         setMessage("¡Asistencia confirmada! 🎉");
-        e.currentTarget.reset();
+        setName(""); // Reiniciar el input
       } else {
         setMessage("Hubo un error al enviar los datos. Inténtalo de nuevo.");
       }
@@ -146,26 +150,21 @@ export default function Home() {
               Nos encantaría contar con tu presencia en este momento tan
               memorable. Ingresa tu nombre y confirma tu asistencia.
             </p>
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col items-center mt-6"
-            >
-              <input
-                type="text"
-                name="Name"
-                className="bg-white w-full max-w-80 px-2 py-1 text-sm border border-gray-300 rounded-md"
-                placeholder="Ingresa tu nombre"
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 hover:scale-105 transition-all disabled:opacity-50"
-                disabled={loading}
-              >
-                {loading ? "Enviando..." : "Confirmar"}
-              </button>
-            </form>
-            {message && <p className="text-sm mt-2">{message}</p>}
+            <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="Name"
+          value={name} // Conectamos el estado
+          onChange={(e) => setName(e.target.value)} // Actualizamos el estado
+          placeholder="Ingresa tu nombre"
+          disabled={loading}
+          className="bg-white px-4 py-2 rounded-lg w-full"
+        />
+          <button type="submit" disabled={loading} className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all">
+          {loading ? "Enviando..." : "Confirmar"}
+            </button>
+      </form>
+      {message && <p>{message}</p>}
           </div>
         </div>
       </div>
