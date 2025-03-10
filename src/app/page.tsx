@@ -1,13 +1,15 @@
-"use client";
-
-import { literata, montserrat } from "@/lib/fonts";
-import { useState } from "react";
+'use client'
 
 /* eslint-disable @next/next/no-img-element */
+import { literata, montserrat } from "@/lib/fonts";
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [name, setName] = useState(""); // Agregamos estado para el nombre
+  const [name, setName] = useState("");
+  const [acompañantes, setAcompañantes] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,35 +22,45 @@ export default function Home() {
     setLoading(true);
     setMessage("");
 
-    const scriptURL =
-      "https://script.google.com/macros/s/AKfycbz_Rt3odJKPb2mEe0pFhNuTQaSjCSRRy8xj80_syoKeApUwTdxuPCCECdK-YWVQiI24/exec";
-
     try {
-      const formData = new FormData();
-      formData.append("Name", name); // Ahora agregamos el valor manualmente
+      const { error, status } = await supabase.from("asistencias").insert([
+        {
+          nombre: name,
+          acompañantes: acompañantes.length > 0 ? acompañantes : null,
+        },
+      ]);
 
-      console.log("FormData enviado:", formData.get("Name")); // Verifica si tiene valor
+      console.log(status)
 
-      const response = await fetch(scriptURL, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        console.log(response)
-        setMessage("¡Asistencia confirmada! 🎉");
-        setName(""); // Reiniciar el input
-      } else {
-        setMessage("Hubo un error al enviar los datos. Inténtalo de nuevo.");
+      if (error) {
+        console.log(error)
+        throw error;
       }
+
+      setMessage("¡Asistencia confirmada! 🎉");
+      setName("");
+      setAcompañantes([]);
     } catch (error) {
-      console.error(error);
-      setMessage("Error en la conexión. Revisa tu internet.");
+      console.log(error);
+      setMessage("Hubo un error al enviar los datos. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
   };
 
+  const agregarAcompañante = () => {
+    setAcompañantes([...acompañantes, ""]);
+  };
+
+  const actualizarAcompañante = (index: number, value: string) => {
+    const nuevosAcompañantes = [...acompañantes];
+    nuevosAcompañantes[index] = value;
+    setAcompañantes(nuevosAcompañantes);
+  };
+
+  const eliminarAcompañante = (index: number) => {
+    setAcompañantes(acompañantes.filter((_, i) => i !== index));
+  };  
   return (
     <div
       className={`flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-[#faf1e9] text-[#502916]  ${montserrat.className} relative overflow-hidden`}
@@ -101,13 +113,14 @@ export default function Home() {
           className={`flex flex-col justify-center items-center pt-16 text-center`}
         >
           <div
-            className={`flex flex-col justify-center items-center text-center ${literata.className} font-light gap-3`}
+            className={`flex flex-col justify-center items-center text-center ${literata.className} font-light gap-1`}
           >
             <p className={`font-light ${montserrat.className}`}>
               Únete a nosotros para celebrar un cumpleaños en honor a{" "}
             </p>
-            <p className="text-9xl font-medium">80</p>
             <p className="text-4xl">GLORIA ROMERO</p>
+            <p className="text-lg">{`"Paquita"`}</p>
+            <p className="text-9xl font-medium">80</p>
             <div className="flex gap-3 items-center pt-4">
               <span className=" h-[1px] w-9 bg-[#502916]"></span>
               <p className="text-2xl">15 de Marzo</p>
@@ -120,6 +133,8 @@ export default function Home() {
 
           <div className="flex flex-col items-center text-center py-12 gap-1 font-light">
             <p className="font-bold text-lg pb-2">LUGAR</p>
+            <p>Centro Cultural Manuelita Saenz</p>
+            <span className="my-2 h-[1px] w-12 bg-[#502916]"></span>
             <p>Jr. Carlos de los Heros 277, Pueblo Libre</p>
             <p>Hora: 06:00 PM - 12:00 AM</p>
             <a
@@ -135,9 +150,8 @@ export default function Home() {
             <img src="shirt.svg" alt="shirt" className="h-14" />
             <p className="font-bold text-lg pb-3 pt-1">VESTIMENTA</p>
             <p className="font-light">
-              La vestimenta para el evento sera sport elegante. Se recomienda el
-              uso de prendas como pantalones de vestir, camisas o polos con
-              cuello, y zapatos formales o zapatillas elegantes.
+              La vestimenta para celebrar este especial evento en honor a
+              Paquita será sport elegante.
             </p>
           </div>
 
@@ -150,21 +164,54 @@ export default function Home() {
               Nos encantaría contar con tu presencia en este momento tan
               memorable. Ingresa tu nombre y confirma tu asistencia.
             </p>
-            <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="Name"
-          value={name} // Conectamos el estado
-          onChange={(e) => setName(e.target.value)} // Actualizamos el estado
-          placeholder="Ingresa tu nombre"
-          disabled={loading}
-          className="bg-white px-4 py-2 rounded-lg w-full"
-        />
-          <button type="submit" disabled={loading} className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all">
-          {loading ? "Enviando..." : "Confirmar"}
+            <form onSubmit={handleSubmit} className="flex flex-col w-full gap-2">
+            <input
+              type="text"
+              name="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ingresa tu nombre"
+              disabled={loading}
+              className="bg-white px-4 py-2 rounded-lg w-full"
+            />
+            
+            {/* Inputs de acompañantes */}
+            {acompañantes.map((acompañante, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={acompañante}
+                  onChange={(e) => actualizarAcompañante(index, e.target.value)}
+                  placeholder={`Acompañante ${index + 1}`}
+                  className="bg-white px-4 py-2 rounded-lg flex-1"
+                />
+                <button
+                  type="button"
+                  onClick={() => eliminarAcompañante(index)}
+                  className="bg-red-500 text-white px-3 py-2 rounded-lg"
+                >
+                  X
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={agregarAcompañante}
+              className="border border-[#502916] text-[#502916] px-4 py-2 rounded-lg mt-2 cursor-pointer hover:scale-105 transition-all"
+            >
+              Añadir acompañante
             </button>
-      </form>
-      {message && <p>{message}</p>}
+            
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all"
+            >
+              {loading ? "Enviando..." : "Confirmar"}
+            </button>
+          </form>
+          {message && <p>{message}</p>}
           </div>
         </div>
       </div>
