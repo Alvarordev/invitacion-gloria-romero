@@ -1,7 +1,39 @@
+"use client"
+
 import { literata, montserrat } from "@/lib/fonts";
+import { useState } from "react";
 
 /* eslint-disable @next/next/no-img-element */
 export default function Home() {
+  const [dato, setDato] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxDYBp_w9mnGgSR2ec5kNKBMC765lxIt_FSjrgZLoDSirbCaNAkIPCEC4l2FWhgZPao/exec"; // Pega aquí la URL de Google Apps Script
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({ dato }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        alert("Dato enviado correctamente");
+        setDato("");
+      } else {
+        alert("Error al enviar el dato");
+      }
+    } catch (error: unknown) {
+      console.log(error);
+      alert("Error en la conexión");
+    }
+  };
+
+
   return (
     <div
       className={`flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-[#faf1e9] text-[#502916]  ${montserrat.className} relative overflow-hidden`}
@@ -71,7 +103,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center pb-12 pt-20 gap-1 font-light">
+          <div className="flex flex-col items-center text-center py-12 gap-1 font-light">
             <p className="font-bold text-lg pb-2">LUGAR</p>
             <p>Jr. Carlos de los Heros 277, Pueblo Libre</p>
             <p>Hora: 06:00 PM - 12:00 AM</p>
@@ -103,14 +135,19 @@ export default function Home() {
               Nos encantaría contar con tu presencia en este momento tan
               memorable. Ingresa tu nombre y confirma tu asistencia.
             </p>
+            <form onSubmit={handleSubmit}>
             <input
               type="text"
+              value={dato}
+              onChange={(e) => setDato(e.target.value)}
               className="bg-white w-full max-w-80 px-2 py-1 text-sm"
               placeholder="Ingresa tu nombre"
             />
-            <button className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all">
+            <button type="submit" className="bg-[#502916] text-[#faf1e9] px-4 py-2 rounded-lg mt-4 cursor-pointer hover:scale-105 transition-all">
               Confirmar
             </button>
+
+            </form>
           </div>
         </div>
       </div>
