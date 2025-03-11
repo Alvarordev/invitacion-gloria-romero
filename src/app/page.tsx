@@ -48,19 +48,19 @@ export default function Home() {
     }
   };
 
-  const agregarAcompañante = () => {
-    setAcompañantes([...acompañantes, ""]);
-  };
+  // const agregarAcompañante = () => {
+  //   setAcompañantes([...acompañantes, ""]);
+  // };
 
-  const actualizarAcompañante = (index: number, value: string) => {
-    const nuevosAcompañantes = [...acompañantes];
-    nuevosAcompañantes[index] = value;
-    setAcompañantes(nuevosAcompañantes);
-  };
+  // const actualizarAcompañante = (index: number, value: string) => {
+  //   const nuevosAcompañantes = [...acompañantes];
+  //   nuevosAcompañantes[index] = value;
+  //   setAcompañantes(nuevosAcompañantes);
+  // };
 
-  const eliminarAcompañante = (index: number) => {
-    setAcompañantes(acompañantes.filter((_, i) => i !== index));
-  };  
+  // const eliminarAcompañante = (index: number) => {
+  //   setAcompañantes(acompañantes.filter((_, i) => i !== index));
+  // };  
   return (
     <div
       className={`flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-[#faf1e9] text-[#502916]  ${montserrat.className} relative overflow-hidden`}
@@ -170,13 +170,13 @@ export default function Home() {
               name="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ingresa tu nombre"
+              placeholder="Ingresa tu nombre y apellido"
               disabled={loading}
               className="bg-white px-4 py-2 rounded-lg w-full"
             />
             
             {/* Inputs de acompañantes */}
-            {acompañantes.map((acompañante, index) => (
+            {/* {acompañantes.map((acompañante, index) => (
               <div key={index} className="flex items-center gap-2">
                 <input
                   type="text"
@@ -193,16 +193,16 @@ export default function Home() {
                   X
                 </button>
               </div>
-            ))}
+            ))} */}
 
-            <button
+            {/* <button
               type="button"
               onClick={agregarAcompañante}
               className="border border-[#502916] text-[#502916] px-4 py-2 rounded-lg mt-2 cursor-pointer hover:scale-105 transition-all"
             >
               Añadir acompañante
             </button>
-            
+             */}
             <button
               type="submit"
               disabled={loading}
